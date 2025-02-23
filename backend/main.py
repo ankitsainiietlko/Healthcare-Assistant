@@ -14,6 +14,11 @@ load_dotenv()
 
 app = FastAPI()
 
+# ✅ Add a root endpoint to prevent 404 Not Found errors
+@app.get("/")
+def home():
+    return {"message": "FastAPI Backend is Running Successfully!"}
+
 # ✅ Enable CORS for frontend connection (Fixed issue)
 app.add_middleware(
     CORSMiddleware,
