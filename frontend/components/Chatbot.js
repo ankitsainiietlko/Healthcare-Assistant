@@ -4,19 +4,44 @@ import axios from "axios";
 export default function Chatbot() {
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
+  const [location, setLocation] = useState(null); // ✅ GPS-based location only (Removed manual city input)
+
   const chatContainerRef = useRef(null);
 
+  // ✅ Fetch user location (GPS)
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("❌ Location access denied:", error);
+          setLocation(null);
+        }
+      );
+    }
+  }, []);
+
+  // ✅ Send message to AI
   const sendMessage = async () => {
     if (!message.trim()) return;
 
     setChatHistory((prev) => [...prev, { sender: "User", text: message }]);
 
     try {
-      const res = await axios.post("http://127.0.0.1:8000/chat/", { prompt: message });
+      const res = await axios.post("http://127.0.0.1:8000/chat/", {
+        prompt: message,
+        latitude: location?.lat, // ✅ GPS location (if available)
+        longitude: location?.lon,
+      });
 
       setChatHistory((prev) => [...prev, { sender: "AI", text: res.data.response }]);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("❌ API Error:", error);
       setChatHistory((prev) => [...prev, { sender: "AI", text: "❌ Error connecting to AI. Please try again." }]);
     }
 
