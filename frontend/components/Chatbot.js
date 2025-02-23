@@ -33,7 +33,7 @@ export default function Chatbot() {
     setChatHistory((prev) => [...prev, { sender: "User", text: message }]);
 
     try {
-      const res = await axios.post("http://127.0.0.1:8000/chat/", {
+      const res = await axios.post("https://healthcare-assistant-b1ml.onrender.com/chat/", {
         prompt: message,
         latitude: location?.lat, // ✅ GPS location (if available)
         longitude: location?.lon,
