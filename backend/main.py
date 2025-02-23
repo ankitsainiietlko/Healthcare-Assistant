@@ -14,13 +14,13 @@ load_dotenv()
 
 app = FastAPI()
 
-# ✅ Enable CORS for frontend connection
+# ✅ Enable CORS for frontend connection (Fixed issue)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["https://healthcare-assistant-nine.vercel.app"],  # Your Vercel frontend URL
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
 )
 
 # ✅ Fetch API keys
@@ -141,5 +141,3 @@ def chat_with_ai(request: ChatRequest):
     except Exception as e:
         print(f"❌ ERROR: {e}")
         return {"response": "❌ Error processing your request. Please try again later."}
-
-
